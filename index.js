@@ -21,16 +21,35 @@ let server = http.createServer(function(req,res){
     let headers = req.headers;
 
     //get the payload 
-    let decoder = new stringDecoder('utf-8')
+    let decoder = new stringDecoder('utf-8');
+    let buffer = '';
+    req.on('data', function(data){
+        buffer += decoder.write(data);
+    })
+ 
+    req.on('end', function(){
+        buffer += decoder.end()
+        //send response
+        res.end('Hello world\n');
 
-    //send response
-    res.end('Hello world\n');
-
-    //log the request path 
-    //console.log('Request received on path : ' + trimmedPath + ' with method ' + method + 'with these query string parameters ' , queryStringobject);
-    console.log('request receive with the headers :' + headers)
+        //log the request path 
+        console.log('request receive with the headers :' + buffer)
+    })
 })
 
 server.listen(3000, function(){
     console.log("the server is listening on port 3000")
 })
+
+//define the handler
+let handlers = {}
+
+//sample handler 
+handlers.sample = function(data, callback){
+
+}
+
+//define a request router 
+let router = {
+    'sample' : handlers.sample
+}
