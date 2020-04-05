@@ -29,6 +29,24 @@ let server = http.createServer(function(req,res){
  
     req.on('end', function(){
         buffer += decoder.end()
+
+        //choose handler if route not found go to handler.notfound
+        let chosenHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handler.notFound
+
+        //construct data object to send  to the handler 
+        let data =  {
+            'trimmedPath': trimmedPath,
+            'queryStringobject' : queryStringobject,
+            'method' : method,
+            'headers' : headers,
+            'payload' : buffer
+        }
+
+        //route the request to the handler specified in router
+        chosenHandler(data, function(statusCode,payload ){
+            
+        })
+
         //send response
         res.end('Hello world\n');
 
@@ -46,8 +64,16 @@ let handlers = {}
 
 //sample handler 
 handlers.sample = function(data, callback){
-
+    //callback status code and payload object 
+    callback(406,{'name': 'handler sample'})
 }
+
+//not found handler
+handler.notFound = function(data,callbacl){
+    //callback status code and payload not found
+    callback(404, {'error': 'routing not found'})
+} 
+
 
 //define a request router 
 let router = {
