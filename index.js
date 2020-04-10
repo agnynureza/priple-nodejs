@@ -5,6 +5,17 @@ const https = require('https')
 const url = require('url')
 const stringDecoder = require('string_decoder').StringDecoder
 const config = require('./config')
+const _data = require('./lib/data')
+
+
+// Testing
+// @TODO delete this
+_data.delete('test','newFile', function(err,data){
+    if(!err){
+        
+    }
+    console.log('this was the error : ', err)
+});
 
 let serverHttp = http.createServer(function(req,res){
     unifiedServer(req,res)
