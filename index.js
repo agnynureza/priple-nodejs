@@ -1,10 +1,34 @@
 //dependencies 
+const fs = require('fs')
 const http = require('http')
+const https = require('https')
 const url = require('url')
 const stringDecoder = require('string_decoder').StringDecoder
 const config = require('./config')
 
-let server = http.createServer(function(req,res){
+let serverHttp = http.createServer(function(req,res){
+    unifiedServer(req,res)
+})
+
+let httpsOptions = {
+    key: fs.readFileSync('./https/key.pem'),
+    cert: fs.readFileSync('./https/cert.pem')
+}
+
+let serverHttps = https.createServer(httpsOptions,function(res,res){
+    unifiedServer(req,res)
+})
+
+serverHttp.listen(config.portHttp, function(){
+    console.log(`the http server is listening on port ${config.httpPort} in ${config.env} now`)
+})
+
+serverHttps.listen(config.httpsPort, function(){
+    console.log(`the https server is listening on port ${config.httpsPort} in ${config.env} now`)
+})
+
+//handler all unified server for http and https server 
+let unifiedServer = function(req,res){
     //get the url and parse it
     let parsedUrl = url.parse(req.url, true);
 
@@ -27,7 +51,7 @@ let server = http.createServer(function(req,res){
     req.on('data', function(data){
         buffer += decoder.write(data);
     })
- 
+
     req.on('end', function(){
         buffer += decoder.end()
 
@@ -62,11 +86,8 @@ let server = http.createServer(function(req,res){
             console.log('returning this response with : ' + statusCode, stringify)
         })
     })
-})
+}
 
-server.listen(config.port, function(){
-    console.log(`the server is listening on port ${config.port} in ${config.env} now`)
-})
 
 //define the handler
 let handlers = {}
