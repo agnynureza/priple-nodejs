@@ -6,6 +6,7 @@ const url = require('url')
 const stringDecoder = require('string_decoder').StringDecoder
 const config = require('./config')
 const _data = require('./lib/data')
+const handlers = require('./lib/handlers')
 
 
 // Testing
@@ -99,24 +100,8 @@ let unifiedServer = function(req,res){
     })
 }
 
-
-//define the handler
-let handlers = {}
-
-//sample handler 
-handlers.hello = function(data, callback){
-    //callback status code and payload object 
-    callback(200,{'message': 'hello world'})
-}
-
-//not found handler
-handlers.notFound = function(data,callback){
-    //callback status code and payload not found
-    callback(404, {'error': 'routing not found'})
-} 
-
-
 //define a request router 
 let router = {
-    'hello' : handlers.hello
+    'users' : handlers.users,
+    'ping' : handlers.ping
 }
