@@ -4,19 +4,11 @@ const http = require('http')
 const https = require('https')
 const url = require('url')
 const stringDecoder = require('string_decoder').StringDecoder
-const config = require('./config')
+const config = require('./lib/config')
 const _data = require('./lib/data')
 const handlers = require('./lib/handlers')
+const helpers = require('./lib/helpers')
 
-
-// Testing
-// @TODO delete this
-_data.delete('test','newFile', function(err,data){
-    if(!err){
-        
-    }
-    console.log('this was the error : ', err)
-});
 
 let serverHttp = http.createServer(function(req,res){
     unifiedServer(req,res)
@@ -31,7 +23,7 @@ let serverHttps = https.createServer(httpsOptions,function(res,res){
     unifiedServer(req,res)
 })
 
-serverHttp.listen(config.portHttp, function(){
+serverHttp.listen(config.httpPort, function(){
     console.log(`the http server is listening on port ${config.httpPort} in ${config.env} now`)
 })
 
@@ -76,9 +68,8 @@ let unifiedServer = function(req,res){
             'queryStringobject' : queryStringobject,
             'method' : method,
             'headers' : headers,
-            'payload' : buffer
+            'payload' : helpers.parseJsonToObject(buffer)
         }
-
         //route the request to the handler specified in router
         chosenHandler(data, function(statusCode,payload ){
             //use status code callback from hadnler
@@ -86,7 +77,7 @@ let unifiedServer = function(req,res){
             
             //user payload callbal from handler
             payload = typeof(payload) == 'object' ? payload : {}
-
+            console.log(payload)
             //convert payload to string
             let stringify = JSON.stringify(payload)
 
