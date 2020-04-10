@@ -8,13 +8,15 @@ let environment = {}
 environment.staging = {
     httpPort : 3000,
     httpsPort : 3001,
-    env : 'Staging'
+    env : 'Staging',
+    hashingSecret : 'thisIsSecret'
 }
 
 environment.production = {
     httpPort : 5000,
     httpsPort : 5001,
-    env : 'Production'
+    env : 'Production',
+    hashingSecret : 'thisIsSecretToo'
 }
 
 //NODE_ENV
