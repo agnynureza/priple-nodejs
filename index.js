@@ -31,7 +31,7 @@ let server = http.createServer(function(req,res){
         buffer += decoder.end()
 
         //choose handler if route not found go to handler.notfound
-        let chosenHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handler.notFound
+        let chosenHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notFound
 
         //construct data object to send  to the handler 
         let data =  {
@@ -44,14 +44,22 @@ let server = http.createServer(function(req,res){
 
         //route the request to the handler specified in router
         chosenHandler(data, function(statusCode,payload ){
+            //use status code callback from hadnler
+            statusCode = typeof(statusCode) == 'number' ? statusCode : 200
             
+            //user payload callbal from handler
+            payload = typeof(payload) == 'object' ? payload : {}
+
+            //convert payload to string
+            let stringify = JSON.stringify(payload)
+
+            res.setHeader('Content-Type','application/json')
+            res.writeHead(statusCode)
+            res.end(stringify)
+
+            //log the request path 
+            console.log('returning this response with : ' + statusCode, stringify)
         })
-
-        //send response
-        res.end('Hello world\n');
-
-        //log the request path 
-        console.log('request receive with the headers :' + buffer)
     })
 })
 
@@ -63,13 +71,13 @@ server.listen(3000, function(){
 let handlers = {}
 
 //sample handler 
-handlers.sample = function(data, callback){
+handlers.hello = function(data, callback){
     //callback status code and payload object 
-    callback(406,{'name': 'handler sample'})
+    callback(200,{'message': 'hello world'})
 }
 
 //not found handler
-handler.notFound = function(data,callbacl){
+handlers.notFound = function(data,callback){
     //callback status code and payload not found
     callback(404, {'error': 'routing not found'})
 } 
@@ -77,5 +85,5 @@ handler.notFound = function(data,callbacl){
 
 //define a request router 
 let router = {
-    'sample' : handlers.sample
+    'hello' : handlers.hello
 }
