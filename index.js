@@ -53,11 +53,11 @@ let unifiedServer = function(req,res){
     let decoder = new stringDecoder('utf-8');
     let buffer = '';
     req.on('data', function(data){
-        buffer += decoder.write(data);
+        buffers += decoder.write(data);
     })
 
     req.on('end', function(){
-        buffer += decoder.end()
+        buffers += decoder.end()
 
         //choose handler if route not found go to handler.notfound
         let chosenHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notFound
@@ -68,7 +68,7 @@ let unifiedServer = function(req,res){
             'queryStringobject' : queryStringobject,
             'method' : method,
             'headers' : headers,
-            'payload' : helpers.parseJsonToObject(buffer)
+            'payload' : helpers.parseJsonToObject(buffers)
         }
         //route the request to the handler specified in router
         chosenHandler(data, function(statusCode,payload ){
