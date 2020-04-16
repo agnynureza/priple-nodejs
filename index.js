@@ -51,7 +51,7 @@ let unifiedServer = function(req,res){
 
     //get the payload 
     let decoder = new stringDecoder('utf-8');
-    let buffer = '';
+    let buffers = '';
     req.on('data', function(data){
         buffers += decoder.write(data);
     })
@@ -77,7 +77,7 @@ let unifiedServer = function(req,res){
             
             //user payload callbal from handler
             payload = typeof(payload) == 'object' ? payload : {}
-            console.log(payload)
+            
             //convert payload to string
             let stringify = JSON.stringify(payload)
 
