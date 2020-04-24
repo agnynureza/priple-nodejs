@@ -95,5 +95,6 @@ let unifiedServer = function(req,res){
 let router = {
     'users' : handlers.users,
     'ping' : handlers.ping,
-    'tokens' : handlers.tokens
+    'tokens' : handlers.tokens,
+    'checks' : handlers.check
 }
