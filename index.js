@@ -9,6 +9,11 @@ const _data = require('./lib/data')
 const handlers = require('./lib/handlers')
 const helpers = require('./lib/helpers')
 
+// @TODO Get rid of this 
+helpers.sendTwilioSms('89663077439', 'Good Morning', function(err){
+    console.log('this was the error', err)
+})
+
 
 let serverHttp = http.createServer(function(req,res){
     unifiedServer(req,res)
@@ -96,5 +101,5 @@ let router = {
     'users' : handlers.users,
     'ping' : handlers.ping,
     'tokens' : handlers.tokens,
-    'checks' : handlers.check
+    'checks' : handlers.checks
 }
